@@ -10,6 +10,7 @@ public class NativeAdd {
 
     public native String getStringFromNative();
     public native int add(int x,int y);
+    public native int calculateSum(int []array);
     private static NativeAdd nativeAdd = null;
 
     public static NativeAdd getInstance() {

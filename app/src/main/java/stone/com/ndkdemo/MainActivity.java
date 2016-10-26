@@ -12,5 +12,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.v("HELLO",NativeAdd.getInstance().getStringFromNative()+"");
         Log.v("HELLO","2+3="+NativeAdd.getInstance().add(2,3));
+        int [] testArray = {1,2,3,4,5,6,7};
+        Log.v("HELLO","testArray sum="+NativeAdd.getInstance().calculateSum(testArray));
     }
 }

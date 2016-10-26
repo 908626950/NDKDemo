@@ -1,0 +1,81 @@
+diff --git a/app/src/main/java/stone/com/ndkdemo/MainActivity.java b/app/src/main/java/stone/com/ndkdemo/MainActivity.java
+index be8e033..73ecc0a 100644
+--- a/app/src/main/java/stone/com/ndkdemo/MainActivity.java
++++ b/app/src/main/java/stone/com/ndkdemo/MainActivity.java
+@@ -12,5 +12,7 @@ public class MainActivity extends AppCompatActivity {
+         setContentView(R.layout.activity_main);
+         Log.v("HELLO",NativeAdd.getInstance().getStringFromNative()+"");
+         Log.v("HELLO","2+3="+NativeAdd.getInstance().add(2,3));
++        int [] testArray = {1,2,3,4,5,6,7};
++        Log.v("HELLO","testArray sum="+NativeAdd.getInstance().calculateSum(testArray));
+     }
+ }
+diff --git a/app/src/main/java/stone/com/ndkdemo/NativeAdd.java b/app/src/main/java/stone/com/ndkdemo/NativeAdd.java
+index cac5ff6..adbefe2 100644
+--- a/app/src/main/java/stone/com/ndkdemo/NativeAdd.java
++++ b/app/src/main/java/stone/com/ndkdemo/NativeAdd.java
+@@ -10,6 +10,7 @@ public class NativeAdd {
+ 
+     public native String getStringFromNative();
+     public native int add(int x,int y);
++    public native int calculateSum(int []array);
+     private static NativeAdd nativeAdd = null;
+ 
+     public static NativeAdd getInstance() {
+diff --git a/app/src/main/jni/jni.c b/app/src/main/jni/jni.c
+index 9eeb7c4..6c86158 100644
+--- a/app/src/main/jni/jni.c
++++ b/app/src/main/jni/jni.c
+@@ -2,12 +2,31 @@
+ // Created by niexiang on 16/10/17.
+ //
+ #include "stone_com_ndkdemo_NativeAdd.h"
++#include <stdlib.h>
++#include <string.h>
+ JNIEXPORT jstring JNICALL Java_stone_com_ndkdemo_NativeAdd_getStringFromNative
+   (JNIEnv * env, jobject obj){
+-  return (*env)->NewStringUTF(env,"NDK 测试成功\n123");
++  return (*env)->NewStringUTF(env,"NDK 测试成功");
+   }
+ 
+ JNIEXPORT jint JNICALL Java_stone_com_ndkdemo_NativeAdd_add
+         (JNIEnv * env, jobject obj, jint x, jint y){
+   return x+y;
+ }
++JNIEXPORT jint JNICALL Java_stone_com_ndkdemo_NativeAdd_calculateSum
++        (JNIEnv *env, jobject obj, jintArray array){
++  jint sum = 0, loop = 0;
++  jint *jArray;
++  jint length =0;
++  length = (*env)->GetArrayLength(env,array);
++  if (length > 0)
++  {
++    jArray = (jint *)malloc(sizeof(jint)*length);
++    (*env)->GetIntArrayRegion(env,array,0,length,jArray);
++    for(loop = 0;loop<length-1;loop++){
++      sum+=jArray[loop];
++    }
++    free(jArray);
++  }
++  return sum;
++}
+\ No newline at end of file
+diff --git a/app/src/main/jni/stone_com_ndkdemo_NativeAdd.h b/app/src/main/jni/stone_com_ndkdemo_NativeAdd.h
+index bc5666e..e6ce44f 100644
+--- a/app/src/main/jni/stone_com_ndkdemo_NativeAdd.h
++++ b/app/src/main/jni/stone_com_ndkdemo_NativeAdd.h
+@@ -23,6 +23,14 @@ JNIEXPORT jstring JNICALL Java_stone_com_ndkdemo_NativeAdd_getStringFromNative
+ JNIEXPORT jint JNICALL Java_stone_com_ndkdemo_NativeAdd_add
+   (JNIEnv *, jobject, jint, jint);
+ 
++/*
++ * Class:     stone_com_ndkdemo_NativeAdd
++ * Method:    calculateSum
++ * Signature: ([I)I
++ */
++JNIEXPORT jint JNICALL Java_stone_com_ndkdemo_NativeAdd_calculateSum
++  (JNIEnv *, jobject, jintArray);
++
+ #ifdef __cplusplus
+ }
+ #endif

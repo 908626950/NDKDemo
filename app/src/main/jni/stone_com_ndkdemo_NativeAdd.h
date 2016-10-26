@@ -23,6 +23,14 @@ JNIEXPORT jstring JNICALL Java_stone_com_ndkdemo_NativeAdd_getStringFromNative
 JNIEXPORT jint JNICALL Java_stone_com_ndkdemo_NativeAdd_add
   (JNIEnv *, jobject, jint, jint);
 
+/*
+ * Class:     stone_com_ndkdemo_NativeAdd
+ * Method:    calculateSum
+ * Signature: ([I)I
+ */
+JNIEXPORT jint JNICALL Java_stone_com_ndkdemo_NativeAdd_calculateSum
+  (JNIEnv *, jobject, jintArray);
+
 #ifdef __cplusplus
 }
 #endif
